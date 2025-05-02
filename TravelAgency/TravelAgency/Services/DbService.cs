@@ -23,6 +23,7 @@ public class DbService(IConfiguration config) : IDbService
         var result = new List<TripGetDTO>();
 
         await using var connection = new SqlConnection(_connectionString);
+        //Select details from joined tables Trip, Country and Country_Trip
         const string sql = "select Trip.IdTrip, Trip.Name, Description, DateFrom, DateTo, MaxPeople, Country.IdCountry, Country.Name from Trip join Country_Trip ON Country_Trip.IdTrip = Trip.IdTrip JOIN Country ON Country_Trip.IdCountry = Country.IdCountry";
         
         await using var command = new SqlCommand(sql, connection);
@@ -65,7 +66,7 @@ public class DbService(IConfiguration config) : IDbService
         {
             return new List<TripGetDTO>();
         }
-        
+        //Select a joined table from Trip, Client and Client_Trip where the client has a particular id
         const string sql = "select Trip.IdTrip, Client.IdClient from Trip JOIN Client_Trip ON Trip.IdTrip = Client_Trip.IdTrip JOIN Client ON Client_Trip.IdClient = Client.IdClient WHERE Client.IdClient = @ClientId";
         var command = new SqlCommand(sql, connection);
         command.Parameters.AddWithValue("@ClientId", id);
@@ -85,7 +86,7 @@ public class DbService(IConfiguration config) : IDbService
     public async Task<Client> AddClientAsync(ClientPostDTO client)
     {
         await using var connection = new SqlConnection(_connectionString);
-        
+        //insert a new row into client with data provided in the request
         const string sql = "insert into Client (FirstName, LastName, Email, Telephone, Pesel) values (@FirstName, @LastName, @Email, @Telephone, @Pesel); select SCOPE_IDENTITY();";
         
         var command = new SqlCommand(sql, connection);
@@ -118,6 +119,7 @@ public class DbService(IConfiguration config) : IDbService
     {
         await using var connection = new SqlConnection(_connectionString);
         
+        //Insert a new row into Client_Trip with the ids of the client and the trip and the current time as int
         const string sql = "insert into Client_Trip (IdClient, IdTrip, RegisteredAt) values (@IdClient, @IdTrip, @CurrentTime)";
         
         await using var command = new SqlCommand(sql, connection);
@@ -139,7 +141,7 @@ public class DbService(IConfiguration config) : IDbService
     public async Task RemoveTripFromClientAsync(int clientId, int tripId)
     {
         await using var connection = new SqlConnection(_connectionString);
-        
+        //Delete the row where the ids match the ids from the request
         const string sql = "delete from Client_Trip where IdClient = @IdClient and IdTrip = @IdTrip";
         
         await using var command = new SqlCommand(sql, connection);
@@ -160,6 +162,7 @@ public class DbService(IConfiguration config) : IDbService
     {
         await using var connection = new SqlConnection(_connectionString);
         
+        //Select the count of clients with a particular id
         const string sql = "select count(1) from Client WHERE IdClient = @IdClient";
         
         var command = new SqlCommand(sql, connection);

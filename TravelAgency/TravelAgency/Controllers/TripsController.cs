@@ -8,11 +8,10 @@ namespace TravelAgency.Controllers;
 [Route("[controller]")]
 public class TripsController(IDbService dbService) : ControllerBase
 {
+    //Get all trips available including the countries that they are happening in
     [HttpGet]
     public async Task<IActionResult> GetAllTrips()
     {
         return Ok(await dbService.GetTripsDetailsAsync());
     }
-
-    
 }

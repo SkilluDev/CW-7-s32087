@@ -9,6 +9,7 @@ namespace TravelAgency.Controllers;
 [Route("[controller]")]
 public class ClientsController(IDbService dbService) : ControllerBase
 {
+    //Get all the trips of a client by their id
     [HttpGet]
     [Route("{id}/trips")]
     public async Task<IActionResult> GetAllTripsById([FromRoute] int id)
@@ -16,6 +17,7 @@ public class ClientsController(IDbService dbService) : ControllerBase
         return Ok(await dbService.GetTripsByIdAsync(id));
     }
 
+    //Add a new client to the database
     [HttpPost]
     public async Task<IActionResult> AddClient([FromBody] ClientPostDTO client)
     {
@@ -30,6 +32,7 @@ public class ClientsController(IDbService dbService) : ControllerBase
         }
     }
 
+    //Add a new trip to the clients trip by id 
     [HttpPut]
     [Route("{clientId}/trips/{tripId}")]
     public async Task<IActionResult> AddTripToClient([FromRoute] int clientId, [FromRoute] int tripId)
@@ -46,6 +49,7 @@ public class ClientsController(IDbService dbService) : ControllerBase
         
     }
 
+    //Delete the client from a certain trip by id
     [HttpDelete]
     [Route("{clientId}/trips/{tripId}")]
     public async Task<IActionResult> RemoveClient([FromRoute] int clientId, [FromRoute] int tripId)
